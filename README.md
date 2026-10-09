@@ -1,129 +1,227 @@
 # Peer-to-Peer Network Communication and File Sharing
 
-A desktop peer-to-peer (P2P) messaging and file-sharing application built with Python TCP sockets and Tkinter. Each running instance can accept incoming connections and connect to other peers. Peers communicate directly; the project does not use a central server.
+## 1. Overview
 
-## Features
+This project is a desktop-based Peer-to-Peer (P2P) messaging and file-sharing application developed using Python, TCP sockets, and Tkinter. It enables users to exchange text messages and files directly between peers without relying on a central server.
 
-- Start a peer with a custom name and listening port.
-- Connect to another peer using its IP address and port.
-- View connected peers and select a peer as the destination.
-- Send text messages and files to a connected peer.
-- Save received files in the `downloads/` directory, avoiding overwriting files with the same name.
-- Handle network activity in background threads so the GUI remains responsive.
+Each running application acts as an independent peer that can accept incoming connections and establish outgoing connections with other peers over a network. The application uses multithreading to manage network communication efficiently while maintaining a responsive graphical user interface.
 
-## Project structure
+## 2. Features
+
+* **Peer Initialization:** Start a peer with a custom name and a specified listening port.
+* **Peer Connection:** Connect to another peer using its IP address and port number.
+* **Peer Management:** View connected peers and select a destination for communication.
+* **Text Messaging:** Send and receive text messages directly between connected peers.
+* **File Sharing:** Transfer files between peers over TCP connections.
+* **File Management:** Save received files in the `downloads/` directory while preventing existing files from being overwritten.
+* **Multithreading:** Perform network operations in background threads to prevent the graphical interface from freezing.
+* **Message Framing:** Use length-prefixed JSON messages for structured communication between peers.
+
+## 3. Project Structure
 
 ```text
 p2p_network/
-├── act.bat             # Activate the project's virtual environment in Command Prompt
-├── main.py             # Tkinter GUI
+├── main.py             # Tkinter graphical user interface
 ├── p2p_node.py         # Peer connections, messaging, and file transfers
-├── protocol.py         # Length-prefixed JSON control-message framing
-├── README.md
-├── requirements.txt    # Currently empty; there are no third-party dependencies
-├── test.bat            # Open two application instances in separate Command Prompt windows
-├── downloads/          # Destination for received files
-└── .venv/              # Optional local virtual environment; not included in version control
+├── protocol.py         # Length-prefixed JSON message framing
+├── README.md           # Project documentation
+├── requirements.txt    # External dependency list
+├── downloads/          # Directory for received files
+├── .gitignore          # Excludes unnecessary files from version control
+└── .venv/              # Optional Python virtual environment
 ```
 
-The `.gitignore` file excludes the virtual environment, Python cache files, and received files inside `downloads/`.
+The `.gitignore` file excludes the virtual environment, Python cache files, and received files stored in the `downloads/` directory. The virtual environment is optional and does not need to be included in version control.
 
-## Requirements
+## 4. System Requirements
 
-- Python 3.11 or later.
-- Tkinter. It is included with many Python installations; on some Linux distributions it must be installed separately.
-- No third-party Python packages are currently required.
+The following requirements must be met to run the application:
 
-To check that Python and Tkinter are available, run:
+* Python 3.11 or later.
+* Tkinter for the graphical user interface.
+* An operating system that supports Python TCP socket programming.
+* No third-party Python packages are currently required.
+
+### Verify Python Installation
+
+Open Command Prompt or PowerShell and execute:
 
 ```powershell
 python --version
+```
+
+This command displays the installed Python version.
+
+### Verify Tkinter Availability
+
+Run the following command:
+
+```powershell
 python -m tkinter
 ```
 
-The second command should open a small Tk window. Close it before continuing.
+If Tkinter is installed correctly, a small test window will appear. Close the window before continuing.
 
-## Setup
+## 5. Installation and Setup
 
-Open Command Prompt in the project directory. To use the project's existing virtual environment, activate it:
+### Step 1: Open the Project Directory
 
-```bat
-act.bat
-```
+Open Command Prompt or PowerShell and navigate to the directory containing the project files.
 
-`act.bat` runs `.venv\Scripts\Activate`. It assumes that the `.venv` environment already exists. If it does not, create it first:
+### Step 2: Create a Virtual Environment
 
-```bat
+A virtual environment is recommended to keep the project environment separate from other Python projects.
+
+Create the environment using:
+
+```powershell
 python -m venv .venv
-act.bat
 ```
 
-Alternatively, use an installed Python directly and skip virtual-environment activation. There are no dependencies to install at this time, and `requirements.txt` is empty.
+### Step 3: Activate the Virtual Environment
 
-## Run the application
+On Windows, execute:
 
-From the project directory, run:
+```powershell
+.venv\Scripts\activate
+```
 
-```bat
+If you are using Linux or macOS, execute:
+
+```bash
+source .venv/bin/activate
+```
+
+Alternatively, you can run the application using your existing Python installation without activating a virtual environment.
+
+### Step 4: Install Dependencies
+
+The project currently does not require any third-party packages, so installing additional dependencies is unnecessary. Tkinter must be available in your Python installation.
+
+## 6. Running the Application
+
+From the project directory, execute:
+
+```powershell
 python main.py
 ```
 
-The project also includes a small automation script, `test.bat`, to launch two application instances for dual-peer testing.
+The application window will open with default values for the peer name and listening port.
 
-To run the script, execute the following command from the project directory:
+Follow these steps to start the application:
 
-```bat
-test.bat
+1. Enter a unique peer name.
+2. Specify an available listening port.
+3. Click **Start Peer** to begin accepting incoming connections.
+4. Connect to another peer by entering its IP address and listening port.
+5. Select a connected peer from the peer list before sending messages or files.
+6. Click **Stop Peer** when you want to stop listening and disconnect from connected peers.
+
+Keep the application running while communicating with other peers.
+
+## 7. Connecting Two Peers on the Same Computer
+
+The application can be tested by running two separate instances on the same computer.
+
+### Step 1: Start the First Peer
+
+Launch the application using `python main.py`. Set the listening port to `5000` and click **Start Peer**.
+
+### Step 2: Start the Second Peer
+
+Open another terminal in the same project directory and launch a second application instance:
+
+```powershell
+python main.py
 ```
 
-The GUI opens with a default peer name and port. Enter a unique name and an available port, then click **Start Peer**. Keep the application open while communicating. Use **Stop Peer** to stop listening and disconnect peers.
+Set its listening port to `5001` and click **Start Peer**.
 
-## Connect peers on the same computer
+### Step 3: Establish the Connection
 
-To run two peers locally:
+In the second application instance, enter the following connection details:
 
-1. Start the application in one terminal and click **Start Peer** using port `5000`.
-2. Start another application instance. Set its listening port to `5001`, then click **Start Peer**.
-3. In the second instance, enter `127.0.0.1` as the IP address and `5000` as the remote port, then click **Connect**.
-4. Select the connected peer in the list before sending a message or file.
+* **IP Address:** `127.0.0.1`
+* **Remote Port:** `5000`
 
-Each instance listens on its own port. The peer you connect to must already be running and started.
+Click **Connect** to establish a connection with the first peer.
 
-## Use the batch helpers
+### Step 4: Exchange Messages and Files
 
-### `act.bat`
+After the connection is established, select the connected peer from the peer list. You can now send text messages and transfer files between the two application instances.
 
-Activates the existing `.venv` environment in Windows Command Prompt. If you create the environment yourself, run `python -m venv .venv` first. To keep the environment active in an existing Command Prompt, run `act.bat` from that prompt.
+The first peer listens on port `5000`, while the second peer listens on port `5001`. Each instance maintains its own listening port and can communicate with connected peers.
 
-### `test.bat`
+## 8. Connecting Peers Over a Local Network
 
-Opens two separate Command Prompt windows, each running `python main.py`. It does not start peers or configure their ports for you. In the two GUI windows, start the peers on different ports (for example, `5000` and `5001`), then connect one to the other as described above.
+To communicate between two different computers, connect both devices to a network that allows direct peer-to-peer communication.
 
-Run `test.bat` from an environment where `python` resolves to the Python interpreter you want the application to use. For the project's virtual environment, run it from the Command Prompt after activating `.venv`.
+Follow these steps:
 
-## Connect over a local network
+1. Start the application on the receiving computer and click **Start Peer**.
+2. Identify the receiving computer's reachable IP address.
+3. Ensure that the listening port is accessible through the network and permitted by the firewall.
+4. Start the application on the sending computer.
+5. Enter the receiving computer's IP address and listening port.
+6. Click **Connect** to establish the connection.
 
-For peers on different computers, connect both computers to a network that permits direct peer-to-peer connections. Start the receiving peer and use that computer's reachable IP address and listening port in the other peer's connection fields. A firewall may need to allow inbound TCP connections on the listening port.
+The application requires the target peer's IP address and port to establish a connection. It does not currently support automatic peer discovery or Internet NAT traversal.
 
-The application does not provide Internet NAT traversal or automatic peer discovery. A peer must know the target IP address and port before connecting.
+## 9. Messaging and File Transfer
 
-## Messaging and file transfer
+### Text Messaging
 
-Select a peer in **Connected Peers** before sending. Text messages appear in the recipient's **Messages / Events** log. For files, choose **Choose File & Send** and select a file; the recipient saves it under `downloads/`. If a file with the same name already exists there, a numbered name is used instead.
+To send a message, select a peer from the **Connected Peers** list, enter the message, and use the messaging controls to send it.
 
-The protocol uses framed JSON for control messages and sends file contents as raw bytes over the established TCP connection. File transfers are handled in chunks.
+Messages and relevant network events appear in the **Messages / Events** log.
 
-## Troubleshooting
+### File Sharing
 
-- **The peer will not start:** Check that the listening port is between `1` and `65535` and is not already in use. Choose another port if necessary.
-- **The connection fails:** Confirm that the remote peer has started, that its IP address and port are correct, and that the network or firewall allows the connection.
-- **The GUI does not open:** Verify that Python is installed and that its installation includes Tkinter. On Linux, install the distribution's Tkinter package if needed.
-- **The batch file cannot find Python:** Activate the intended environment or ensure Python is available on `PATH`, then run the batch file from the project directory.
+To transfer a file:
 
-## Security and scope
+1. Select the intended recipient from the connected peer list.
+2. Click **Choose File & Send**.
+3. Select the file you want to transfer.
+4. Allow the transfer to complete.
 
-This is a basic networking project, not a production-ready secure messenger. It does not implement encryption, authentication, or blockchain functionality. Do not use it to transfer sensitive data over untrusted networks.
+The receiving peer saves the file in the `downloads/` directory. If a file with the same name already exists, the application generates a numbered filename to avoid overwriting the existing file.
 
-## Screenshots
-![demo](screenshot/demo.png)
-![download folder](screenshot/download_folder.png)
+### Communication Protocol
+
+The application uses TCP sockets for reliable, ordered data delivery between connected peers.
+
+Control messages are encoded as JSON and transmitted using length-prefixed framing. File contents are transferred as raw bytes over the established TCP connection, with file data sent in chunks.
+
+The `protocol.py` module manages message framing, while `p2p_node.py` handles peer connections, messaging, and file transfers.
+
+## 10. Troubleshooting
+
+* **The application does not start:** Verify that Python 3.11 or later is installed and available from the terminal.
+* **The graphical interface does not open:** Check whether Tkinter is installed and properly configured. On Linux, you may need to install the appropriate Tkinter package separately.
+* **The peer cannot start:** Ensure the listening port is between `1` and `65535` and is not already being used by another application.
+* **The connection fails:** Verify that the remote peer is running, has started listening, and is using the correct IP address and port.
+* **The connection is blocked:** Check the firewall settings and confirm that the network permits inbound TCP connections on the selected port.
+* **The file is not received:** Verify that the connection remains active, that the transfer completes successfully, and that the application has permission to write to the `downloads/` directory.
+* **Python cannot find the project files:** Make sure the terminal is opened in the project directory before executing `python main.py`.
+
+## 11. Security and Limitations
+
+This project is intended for educational purposes and demonstrates the fundamental concepts of peer-to-peer networking, socket programming, multithreading, and file sharing.
+
+The current implementation has the following limitations:
+
+* **No Encryption:** Communication is not protected by end-to-end encryption.
+* **No Authentication:** The application does not verify the identity of connecting peers.
+* **No Automatic Peer Discovery:** Users must manually provide the target peer's IP address and port.
+* **No Internet NAT Traversal:** Direct connections across networks may fail when routers or firewalls prevent inbound connections.
+* **Limited Security Protection:** The application is not designed for handling sensitive information over untrusted networks.
+
+Users should avoid transferring confidential files or sensitive information until appropriate security measures, including encryption, authentication, and input validation, have been implemented.
+
+## 12. Conclusion
+
+The Peer-to-Peer Network Communication and File Sharing application demonstrates how Python TCP sockets can be used to build a decentralized communication system. By combining direct peer connections, text messaging, file transfers, JSON-based message framing, multithreading, and a Tkinter graphical interface, the project provides a practical introduction to network application development.
+
+The project also offers a foundation for future improvements, such as secure communication, peer authentication, automatic peer discovery, and enhanced file-transfer management.
+
+
